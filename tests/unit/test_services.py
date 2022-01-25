@@ -12,12 +12,13 @@ class FakeSession:
 
 class FakeRepository(repository.AbstractRepository):
     def __init__(self, products):
+        super().__init__()
         self._products = set(products)
 
-    def add(self, product):
+    def _add(self, product):
         self._products.add(product)
 
-    def get(self, sku):
+    def _get(self, sku):
         return next((p for p in self._products if p.sku == sku), None)
 
     def list(self):
@@ -29,11 +30,11 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         self.products = FakeRepository([])
         self.committed = False
 
-    def commit(self):
-        self.committed = True
-
     def rollback(self):
         pass
+
+    def _commit(self):
+        self.committed = True
 
 
 def test_add_batch_for_new_product():
